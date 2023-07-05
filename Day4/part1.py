@@ -1,4 +1,4 @@
-file_name = "test_input.txt"
+file_name = "sample_input.txt"
 
 
 def file_read_gen(file):
