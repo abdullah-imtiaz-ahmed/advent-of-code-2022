@@ -24,16 +24,13 @@ def read_and_parse_file(file):
         else:
             move = [int(digit) for digit in re.findall(r"\d+", line)]
             moves.append(move)
-    # print(stacks)
     return stacks, moves
 
 
 def supply_stacks(file_name):
     with open(file_name, "r") as file:
         stacks, moves = read_and_parse_file(file)
-        # print(filter_empty_values(stacks))
         stacks = filter_empty_values(matrix_transpose(stacks[:-1]))
-        # print(stacks)
     for move in moves:
         number_of_items, from_, to = move
         from_, to = from_ - 1, to - 1
@@ -43,7 +40,7 @@ def supply_stacks(file_name):
 
     crate_on_top_of_stack = []
     for stack in stacks:
-        crate_on_top_of_stack.append(stack.pop(0)[1])
+        crate_on_top_of_stack.append(stack[0][1])
     return "".join(crate_on_top_of_stack)
 
 
