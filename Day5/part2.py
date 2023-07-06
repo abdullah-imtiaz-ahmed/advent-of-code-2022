@@ -40,7 +40,6 @@ def supply_stacks(file_name):
 
     crate_on_top_of_stack = []
     for stack in stacks:
-        print(stack)
         crate_on_top_of_stack.append(stack[0][1])
     return "".join(crate_on_top_of_stack)
 
