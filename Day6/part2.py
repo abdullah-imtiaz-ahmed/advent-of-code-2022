@@ -1,4 +1,4 @@
-file_name = "test_input.txt"
+file_name = "sample_input.txt"
 
 
 def tuning_trouble(file_name):
