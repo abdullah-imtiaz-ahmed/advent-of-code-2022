@@ -3,17 +3,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 
-file_name = "sample_input.txt"
-
-
-def print_children(node, level):
-    if node.is_directory:
-        print("--" * level + node.name)
-    else:
-        print("--" * level + node.name)
-    if len(node.children) > 0:
-        for child in node.children:
-            print_children(child, level + 1)
+file_name = "test_input.txt"
 
 
 @dataclass
@@ -48,6 +38,41 @@ def file_read_gen(file):
         yield line.strip()
 
 
+def print_children(node, level):
+    if node.is_directory:
+        print(f"{'--' * level} {node.name} (directory) ({get_size(node)})")
+    else:
+        print(f"{'--' * level} {node.name} (file) ({get_size(node)})")
+    if len(node.children):
+        for child in node.children:
+            print_children(child, level + 1)
+
+
+def get_size(node):
+    if node.is_directory:
+        count = 0
+        for child in node.children:
+            count += get_size(child) if child.is_directory else child.size
+        return count
+    else:
+        return node.size
+
+
+at_most_directory_size = 100000
+
+
+def find_subdirectories(node):
+    dir_sizes = 0
+    if node.is_directory:
+        for child in node.children:
+            size = get_size(child)
+            if child.is_directory and size <= at_most_directory_size:
+                dir_sizes += size + find_subdirectories(child)
+            else:
+                dir_sizes += find_subdirectories(child)
+    return dir_sizes
+
+
 def no_space_left_on_device(file_name):
     tree = Tree()
     with open(file_name, "r") as file:
@@ -67,7 +92,7 @@ def no_space_left_on_device(file_name):
                         node = Node(is_directory=True, name=name, parent=tree.current)
                     else:
                         size, name = line.split(" ")
-                        node = Node(name=name, size=size, parent=tree.current)
+                        node = Node(name=name, size=int(size), parent=tree.current)
                     tree.add_child(node)
 
             # goto root
@@ -82,7 +107,9 @@ def no_space_left_on_device(file_name):
                 _, _, name = line.split(" ")
                 tree.filter_child(name)
 
-    print_children(tree._root, 0)
+    # print_children(tree._root, 0)
+    # print(get_size(tree._root))
+    return find_subdirectories(tree._root)
 
 
 if __name__ == "__main__":
